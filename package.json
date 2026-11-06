@@ -1,0 +1,36 @@
+{
+  "name": "double-entry-ledger",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Folio: double-entry bookkeeping in the browser. Journal, ledger, trial balance, statements, invoices and bills, VAT, multi-currency revaluation and year-end close, in the international chart or the Turkish uniform chart of accounts.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "serve": "node scripts/serve.mjs"
+  },
+  "dependencies": {
+    "exceljs": "4.4.0",
+    "lucide-react": "1.63.0",
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "recharts": "3.10.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "20.19.43",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.3",
+    "tailwindcss": "4.3.3",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}
