@@ -43,8 +43,8 @@ export function Currencies() {
   return (
     <>
       <PageHeader title={t("Currencies")} description={t("The lira is the base currency. Foreign amounts keep their own balance and are restated at month-end rates; differences go to exchange gains and losses.")} />
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        {FOREIGN.map((c) => {
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-3">
+        {FOREIGN.filter((c) => book.rates.some((r) => r.currency === c) || c !== "GBP").map((c) => {
           const series = Array.from({ length: 90 }, (_, i) => rateOn(book, c, new Date(Date.parse(today) - (89 - i) * 86_400_000).toISOString().slice(0, 10))).filter((x): x is number => x !== null);
           const latest = rateOn(book, c, today);
           const first = series[0];
@@ -137,7 +137,7 @@ export function Currencies() {
               {positions.map((p) => (
                 <li key={`${p.account}${p.currency}`} className="flex items-center justify-between gap-3 px-4 py-2.5">
                   <span className="min-w-0 truncate">
-                    <span className="font-mono text-xs text-muted">{p.account}</span> {acc.get(p.account)?.name[lang]}
+                    <span className="font-mono text-xs text-muted">{p.account}</span> {acc.get(p.account)?.name[lang]} <span className="text-xs text-muted">· {p.currency}</span>
                   </span>
                   <span className="text-right">
                     <span className={cx("block", num)}>{money(p.fx, p.currency)}</span>

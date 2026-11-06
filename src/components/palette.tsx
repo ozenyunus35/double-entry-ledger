@@ -107,7 +107,7 @@ export function Palette({ open, onClose, commands }: { open: boolean; onClose: (
                   pick(list[i]);
                 }
               }}
-              placeholder={t("Search documents, views and actions…")}
+              placeholder={t("Search entries, accounts, invoices and actions…")}
               className="h-12 min-w-0 flex-1 bg-transparent text-[14px] outline-none placeholder:text-faint"
               aria-label={t("Search commands")}
               role="combobox"
@@ -145,7 +145,7 @@ export function Palette({ open, onClose, commands }: { open: boolean; onClose: (
               <kbd className="font-sans">↵</kbd> {t("open")}
             </span>
             <span>
-              <kbd className="font-sans">j / k</kbd> {t("next or previous document, outside the palette")}
+              <kbd className="font-sans">N</kbd> {t("new entry, outside the palette")}
             </span>
           </div>
         </div>

@@ -32,6 +32,11 @@ export function Audit() {
   const { lang } = useLang();
   const { book } = useBook();
   const [q, setQ] = useState("");
+  /** "#12 Payroll 2026-03": the number stays, the description is translated. */
+  const targetText = (target: string) => {
+    const m = /^(#\d+) (.*)$/.exec(target);
+    return m ? `${m[1]} ${known(m[2])}` : known(target);
+  };
   const rows = useMemo(() => {
     const s = q.trim().toLocaleLowerCase("tr");
     return book.audit.filter((a) => !s || `${a.target} ${known(a.target)} ${a.action} ${a.detail ?? ""}`.toLocaleLowerCase("tr").includes(s)).slice(0, 300);
@@ -66,7 +71,7 @@ export function Audit() {
                       </td>
                       <td className={cx(td, "max-w-0")}>
                         <p className="truncate">
-                          {known(a.target)}
+                          {targetText(a.target)}
                           {a.detail && a.action !== "close-year" && a.action !== "revalue" && <span className="ml-2 text-xs text-muted">{t(a.detail)}</span>}
                         </p>
                       </td>

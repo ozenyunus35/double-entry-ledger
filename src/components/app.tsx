@@ -29,6 +29,7 @@ import { go, shareUrl, useRoute, type Route, type View } from "@/lib/route";
 import { activeBook, getServerState, getState, resetDemo, setActive, subscribe, update, yearToDate, type State } from "@/lib/store";
 import type { Book, Entry } from "@/lib/types";
 import { addMonths, monthEnd } from "@/lib/ledger";
+import { date as fmtDate } from "@/lib/format";
 import { Palette, usePaletteShortcut, type Command } from "./palette";
 import { ThemeToggle, toggleTheme } from "./theme-toggle";
 import { ToastProvider, useToast } from "./toast";
@@ -311,7 +312,7 @@ function SidebarFooter() {
     <div className="border-t border-border p-3 text-xs text-muted">
       <p className="flex items-center gap-1.5">
         <Lock className="size-3" />
-        {book.lockedThrough ? t("Locked through {date}", { date: book.lockedThrough }) : t("No period is locked")}
+        {book.lockedThrough ? t("Locked through {date}", { date: fmtDate(book.lockedThrough) }) : t("No period is locked")}
       </p>
       {drafts > 0 && (
         <button onClick={() => go({ v: "journal", q: "status:draft" })} className="mt-1 text-left text-warning hover:underline">
@@ -396,12 +397,12 @@ function Header({ onMenu, onSearch }: { onMenu: () => void; onSearch: () => void
     return r.from === period.from && r.to === period.to;
   });
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border bg-bg/85 px-4 backdrop-blur md:px-8">
+    <header className="sticky top-0 z-20 flex h-14 min-w-0 items-center gap-2 border-b border-border bg-bg/85 px-3 backdrop-blur sm:px-4 md:px-8">
       <button onClick={onMenu} className="rounded-md p-1.5 text-muted hover:bg-surface-2 lg:hidden" aria-label={t("Open menu")}>
         <Menu className="size-4" />
       </button>
       <p className="hidden min-w-0 truncate font-medium md:block">{nav ? t(nav.label) : ""}</p>
-      <div className="ml-auto flex items-center gap-1.5">
+      <div className="ml-auto flex min-w-0 items-center gap-1.5">
         <label className="sr-only" htmlFor="period">
           {t("Period")}
         </label>
@@ -412,7 +413,7 @@ function Header({ onMenu, onSearch }: { onMenu: () => void; onSearch: () => void
             const p = e.target.value as Preset;
             go(presetRange(p, today), { replace: true });
           }}
-          className="h-8 max-w-36 rounded-md border border-border bg-surface px-2 text-[13px] shadow-card sm:max-w-none"
+          className="h-8 w-32 min-w-0 rounded-md border border-border bg-surface px-2 text-[13px] shadow-card sm:w-auto"
         >
           {PRESETS.map((p) => (
             <option key={p} value={p}>
@@ -424,13 +425,10 @@ function Header({ onMenu, onSearch }: { onMenu: () => void; onSearch: () => void
         <button onClick={onSearch} className="flex h-8 items-center gap-2 rounded-md border border-border bg-surface px-2.5 text-muted shadow-card hover:bg-surface-2" aria-label={t("Search and commands")}>
           <Search className="size-3.5" />
           <span className="hidden xl:inline">{t("Search…")}</span>
-          <kbd className="hidden rounded border border-border px-1 text-[10px] sm:inline">⌘K</kbd>
+          <kbd className="hidden rounded border border-border px-1 text-[10px] md:inline">⌘K</kbd>
         </button>
-        <Button variant="primary" onClick={() => edit(null)} className="hidden sm:inline-flex">
-          <Plus /> {t("New entry")}
-        </Button>
-        <Button variant="primary" onClick={() => edit(null)} className="sm:hidden" aria-label={t("New entry")}>
-          <Plus />
+        <Button variant="primary" onClick={() => edit(null)} aria-label={t("New entry")} className="px-2.5 sm:px-3">
+          <Plus /> <span className="hidden sm:inline">{t("New entry")}</span>
         </Button>
         <LangToggle className="hidden sm:inline-flex" />
         <ThemeToggle />

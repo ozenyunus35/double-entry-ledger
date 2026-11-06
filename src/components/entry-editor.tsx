@@ -7,7 +7,7 @@ import { useKnown, useLang, useT } from "@/lib/i18n";
 import { parseRate } from "@/lib/importer";
 import { cleanLines, postDraft, saveDraft, sortedAccounts, sum, validateEntry } from "@/lib/ledger";
 import { CURRENCIES, convert, parseAmount, type Currency } from "@/lib/money";
-import { amount, rate as fmtRate } from "@/lib/format";
+import { amount, date as fmtDate, rate as fmtRate } from "@/lib/format";
 import type { Entry, Line } from "@/lib/types";
 import { go } from "@/lib/route";
 import { useBook } from "./app";
@@ -286,7 +286,7 @@ export function EntryEditor({ entry, preset, onClose }: { entry: Entry | null; p
         )}
         <p className="mt-3 text-xs text-faint">
           {t("Amounts accept 1,234.56 and 1.234,56. Foreign lines are converted at their rate; the entry must balance in lira. Posted entries can't be edited, only reversed.")}
-          {book.lockedThrough && ` ${t("Locked through {date}", { date: book.lockedThrough })}.`}
+          {book.lockedThrough && ` ${t("Locked through {date}", { date: fmtDate(book.lockedThrough) })}.`}
           {lines.some((l) => l.rate) && ` ${t("Rates are from the table on the entry date: {rates}.", { rates: [...new Set(lines.filter((l) => l.currency).map((l) => `${l.currency} ${fmtRate(l.rate ?? 0)}`))].join(", ") })}`}
         </p>
       </div>
