@@ -212,7 +212,7 @@ function BalanceView() {
   const prev = useMemo(() => balanceSheet(book, prevDate), [book, prevDate]);
   const side = (lines: StatementLine[], total: { key: string; label: string; amount: number }) => [...lines, { ...total, level: 0 as const, total: true }];
   return (
-    <div className="grid grid-cols-1 gap-3 xl:grid-cols-2">
+    <div className="grid grid-cols-1 gap-3">
       <Card>
         <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
           <h2 className="font-medium">{t("Assets")}</h2>
