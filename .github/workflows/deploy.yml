@@ -17,6 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 40
     env:
       PAGES_BASE_PATH: /double-entry-ledger
     steps:
@@ -30,7 +31,9 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      # The browser download has hung on the runner before; fail fast instead of waiting hours.
       - run: npx playwright install --with-deps chromium webkit
+        timeout-minutes: 10
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v7
         if: failure()
