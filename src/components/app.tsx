@@ -273,7 +273,7 @@ function Sidebar({ route, open, onClose, onNewBook }: { route: Route; open: bool
           <span className="text-[14px] font-semibold tracking-[-0.01em]">Folio</span>
           <span className="text-xs text-faint">{t("Double-entry ledger")}</span>
         </div>
-        <BookSwitcher onNewBook={onNewBook} />
+        <BookSwitcher onNewBook={onNewBook} onPicked={onClose} />
         <div className="scroll-thin flex-1 overflow-y-auto px-2 pb-4">
           {groups.map((g) => (
             <div key={g} className="mt-4">
@@ -323,7 +323,7 @@ function SidebarFooter() {
   );
 }
 
-function BookSwitcher({ onNewBook }: { onNewBook: () => void }) {
+function BookSwitcher({ onNewBook, onPicked }: { onNewBook: () => void; onPicked: () => void }) {
   const t = useT();
   const { state, book, act } = useBook();
   const [open, setOpen] = useState(false);
@@ -354,6 +354,7 @@ function BookSwitcher({ onNewBook }: { onNewBook: () => void }) {
               onClick={() => {
                 setActive(b.id);
                 setOpen(false);
+                onPicked();
               }}
               className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:bg-surface-2"
             >
@@ -365,7 +366,7 @@ function BookSwitcher({ onNewBook }: { onNewBook: () => void }) {
             </button>
           ))}
           <div className="my-1 border-t border-border" />
-          <button role="menuitem" onClick={() => (setOpen(false), onNewBook())} className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-muted hover:bg-surface-2 hover:text-text">
+          <button role="menuitem" onClick={() => (setOpen(false), onPicked(), onNewBook())} className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-muted hover:bg-surface-2 hover:text-text">
             <Plus className="size-3.5" /> {t("New company")}
           </button>
           {book.demo && state.edited.includes(book.id) && (
