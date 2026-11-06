@@ -74,7 +74,11 @@ export function createDoc(book: Book, input: DocInput, at?: string): { book: Boo
   const foreign = input.currency !== "TRY";
   const rate = foreign ? input.rate : 1;
   const { total } = docTotals(input);
-  const parts = [...input.lines.map((l) => ({ account: l.account, fx: lineNet(l) })), { account: input.kind === "invoice" ? code(book, "vat-output") : code(book, "vat-input"), fx: docTotals(input).vat }].filter((p) => p.fx !== 0);
+  // One journal line per account: three design lines on the same sales account post as one.
+  const byAccount = new Map<string, number>();
+  for (const l of input.lines) byAccount.set(l.account, (byAccount.get(l.account) ?? 0) + lineNet(l));
+  const vatAccount = input.kind === "invoice" ? code(book, "vat-output") : code(book, "vat-input");
+  const parts = [...[...byAccount].map(([account, fx]) => ({ account, fx })), { account: vatAccount, fx: docTotals(input).vat }].filter((p) => p.fx !== 0);
   const baseTotal = foreign ? convert(total, rate) : total;
   const baseParts = allocate(baseTotal, parts.map((p) => p.fx));
   const counter = input.kind === "invoice" ? code(book, "receivables") : code(book, "payables");

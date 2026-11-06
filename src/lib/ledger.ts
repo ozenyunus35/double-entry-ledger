@@ -81,9 +81,24 @@ export function validateEntry(book: Pick<Book, "accounts" | "lockedThrough">, en
 export const now = () => new Date().toISOString();
 
 let counter = 0;
+/** Set while demo books are generated, so their ids are the same on every rebuild and links to them keep working. */
+let sequence: { n: number } | null = null;
+
 export function newId(prefix: string): string {
+  if (sequence) return `${prefix}-${(++sequence.n).toString(36)}`;
   counter = (counter + 1) % 1e6;
   return `${prefix}-${Date.now().toString(36)}${counter.toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+}
+
+/** Runs a function with numbered ids instead of random ones. */
+export function withSequentialIds<T>(fn: () => T): T {
+  const prev = sequence;
+  sequence = { n: 0 };
+  try {
+    return fn();
+  } finally {
+    sequence = prev;
+  }
 }
 
 function audit(book: Book, action: AuditEvent["action"], target: string, detail?: string, at = now()): Book {
@@ -122,7 +137,7 @@ export interface EntryInput {
 }
 
 /** Saves an entry as a draft. Drafts may be unbalanced; posting is where the rules apply. */
-export function saveDraft(book: Book, input: EntryInput, id?: string): { book: Book; entry: Entry } {
+export function saveDraft(book: Book, input: EntryInput, id?: string, at = now()): { book: Book; entry: Entry } {
   if (id) {
     const old = book.entries.find((e) => e.id === id);
     if (!old) throw new LedgerError("not-found", "That entry no longer exists.");
@@ -141,9 +156,11 @@ export function saveDraft(book: Book, input: EntryInput, id?: string): { book: B
     source: input.source ?? "manual",
     lines: cleanLines(input.lines),
     doc: input.doc,
-    createdAt: now(),
+    createdAt: at,
   };
-  return { book: audit({ ...book, entries: [...book.entries, entry] }, "create", entry.memo || "draft"), entry };
+  // Entries posted straight away (invoices, payments, imports) log one event, not a draft and a post.
+  const next = { ...book, entries: [...book.entries, entry] };
+  return { book: input.source && input.source !== "manual" ? next : audit(next, "create", entry.memo || "draft", undefined, at), entry };
 }
 
 export function deleteDraft(book: Book, id: string): Book {
@@ -169,7 +186,7 @@ export function postDraft(book: Book, id: string, at = now()): { book: Book; ent
 export function postEntry(book: Book, input: EntryInput, at = now()): { book: Book; entry: Entry } {
   const issues = validateEntry(book, { date: input.date, lines: cleanLines(input.lines) });
   if (issues.length) throw new LedgerError(issues[0].code, issues[0].message, issues[0].vars);
-  const draft = saveDraft(book, input);
+  const draft = saveDraft(book, input, undefined, at);
   return postDraft(draft.book, draft.entry.id, at);
 }
 

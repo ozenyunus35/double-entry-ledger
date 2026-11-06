@@ -140,6 +140,7 @@ export function LangToggle({ className = "" }: { className?: string }) {
         <button
           key={l}
           role="radio"
+          data-lang={l}
           aria-checked={lang === l}
           onClick={() => setLang(l)}
           className={`rounded px-1.5 py-0.5 uppercase transition-colors ${lang === l ? "bg-surface-2 text-text" : "text-faint hover:text-text"}`}
@@ -149,4 +150,10 @@ export function LangToggle({ className = "" }: { className?: string }) {
       ))}
     </div>
   );
+}
+
+/** For text that may also be data, such as entry descriptions: known phrases are translated, the rest is shown as written. */
+export function useKnown() {
+  const { lang } = useLang();
+  return (s: string) => translateKnown(lang, s);
 }

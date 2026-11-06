@@ -2,6 +2,7 @@
 
 import { CheckCircle2, AlertTriangle, X } from "lucide-react";
 import { createContext, useCallback, useContext, useState } from "react";
+import { useT } from "@/lib/i18n";
 
 type Tone = "success" | "error";
 interface Toast {
@@ -13,6 +14,7 @@ interface Toast {
 const ToastContext = createContext<{ toast: (message: string, tone?: Tone) => void }>({ toast: () => {} });
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const t = useT();
   const [toasts, setToasts] = useState<Toast[]>([]);
   const dismiss = useCallback((id: number) => setToasts((t) => t.filter((x) => x.id !== id)), []);
   const toast = useCallback(
@@ -28,11 +30,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     <ToastContext.Provider value={{ toast }}>
       {children}
       <div className="pointer-events-none fixed inset-x-0 bottom-4 z-[60] flex flex-col items-center gap-2 px-4 sm:items-end" aria-live="polite" role="status">
-        {toasts.map((t) => (
-          <div key={t.id} className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-lg border border-border bg-surface p-3 text-sm shadow-lg">
-            {t.tone === "success" ? <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /> : <AlertTriangle className="mt-0.5 size-4 shrink-0 text-danger" aria-hidden />}
-            <p className="flex-1">{t.message}</p>
-            <button onClick={() => dismiss(t.id)} className="text-muted hover:text-text" aria-label="Dismiss notification">
+        {toasts.map((x) => (
+          <div key={x.id} className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-lg border border-border bg-surface p-3 text-sm shadow-lg">
+            {x.tone === "success" ? <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-success" aria-hidden /> : <AlertTriangle className="mt-0.5 size-4 shrink-0 text-danger" aria-hidden />}
+            <p className="flex-1">{x.message}</p>
+            <button onClick={() => dismiss(x.id)} className="text-muted hover:text-text" aria-label={t("Dismiss notification")}>
               <X className="size-4" />
             </button>
           </div>

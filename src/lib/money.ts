@@ -102,7 +102,10 @@ export function detectDecimal(values: string[]): DecimalMark | null {
     if (!s) continue;
     const lc = s.lastIndexOf(",");
     const ld = s.lastIndexOf(".");
-    if (lc > -1 && ld > -1) (lc > ld ? comma++ : dot++);
+    if (lc > -1 && ld > -1) {
+      if (lc > ld) comma++;
+      else dot++;
+    }
     else if (lc > -1 && s.length - lc - 1 !== 3) comma++;
     else if (ld > -1 && s.length - ld - 1 !== 3) dot++;
     else if (/^\d{1,3}(\.\d{3}){2,}$/.test(s)) comma++;

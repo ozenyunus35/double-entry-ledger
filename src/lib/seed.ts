@@ -2,7 +2,7 @@ import { CHARTS, type ChartId, type Role } from "./charts";
 import { closeYear, settleVat } from "./close";
 import { createDoc, openAmount, recordPayment } from "./docs";
 import { carryingRate, rateOn, revalue } from "./fx";
-import { addDays, addMonths, balances, code, lockThrough, monthEnd, postEntry, saveDraft } from "./ledger";
+import { addDays, addMonths, balances, code, lockThrough, monthEnd, postEntry, saveDraft, withSequentialIds } from "./ledger";
 import { convert, toMinor, type Currency } from "./money";
 import { runRecurring } from "./recurring";
 import { incomeStatement } from "./reports";
@@ -91,8 +91,12 @@ export function emptyBook(chart: ChartId, name = "New company", today = iso(new 
   };
 }
 
-/** Builds the demo books, dated so that the last twelve months end today. */
+/** Builds the demo books, dated so that the last twelve months end today. Ids are numbered, so links survive a rebuild. */
 export function demoBook(chart: ChartId, today: string): Book {
+  return withSequentialIds(() => buildDemo(chart, today));
+}
+
+function buildDemo(chart: ChartId, today: string): Book {
   const rand = rng(20261106);
   const r = (min: number, max: number) => min + rand() * (max - min);
   const pick = <T,>(xs: T[]) => xs[Math.floor(rand() * xs.length)];

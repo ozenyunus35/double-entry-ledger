@@ -275,3 +275,10 @@ it("builds the same books in both charts", () => {
   expect(balanceSheet(a, TODAY).totalAssets).toBe(balanceSheet(b, TODAY).totalAssets);
   expect(CHARTS.tdhp.length).toBeGreaterThan(30);
 });
+
+it("gives the demo books the same ids on every rebuild, so shared links keep working", () => {
+  const a = demoBook("tdhp", TODAY);
+  const b = demoBook("tdhp", TODAY);
+  expect(a.entries.map((e) => e.id)).toEqual(b.entries.map((e) => e.id));
+  expect(a.docs.map((d) => d.id)).toEqual(b.docs.map((d) => d.id));
+});

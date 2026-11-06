@@ -89,6 +89,7 @@
   --animate-pop: pop 0.14s ease-out both;
   --animate-drawer: drawer 0.2s ease-out both;
   --animate-rise: rise 0.24s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-panel: panel 0.22s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 @keyframes rise {
@@ -98,21 +99,11 @@
   }
 }
 
-/* A booking that just arrived from another tab: a brief accent tint, no glow. */
-@keyframes arrived {
-  0%,
-  60% {
-    box-shadow: 0 0 0 2px var(--accent);
+@keyframes panel {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
   }
-}
-
-.arrived {
-  animation: arrived 2.4s ease-out;
-}
-
-/* Breaks and time off on the calendar: quiet diagonal hatching. */
-.hatch {
-  background-image: repeating-linear-gradient(135deg, var(--border) 0 1px, transparent 1px 7px);
 }
 
 @keyframes enter {
@@ -169,36 +160,6 @@ dialog[open] {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* SQL highlighting: keywords in the accent, strings and numbers in muted status colours. */
-.sql-kw {
-  color: var(--accent);
-  font-weight: 500;
-}
-.sql-str {
-  color: var(--success);
-}
-.sql-num {
-  color: var(--info);
-}
-.sql-com {
-  color: var(--faint);
-  font-style: italic;
-}
-.sql-fn {
-  color: var(--warning);
-}
-
-/* Editor: the textarea sits over the highlighted copy and must wrap the same way. */
-.editor-layer {
-  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
-  font-size: 12.5px;
-  line-height: 20px;
-  tab-size: 2;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  padding: 12px 14px;
 }
 
 @keyframes shimmer {
